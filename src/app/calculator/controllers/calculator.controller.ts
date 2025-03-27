@@ -1,15 +1,15 @@
-import { Inject, InjectionToken } from '@angular/core';
-import { Calculator, CALCULATOR_MODEL } from '../models/calculator';
-import { IObserver } from '../views/i-observer';
+import { InjectionToken } from '@angular/core';
+import { Calculator } from '../models/calculator.model';
+import { IObserver } from '../views/iobserver.interface';
 
 export const CALCULATOR_CONTROLLER = new InjectionToken<CalculatorController>(
-  'CalculatorController'
+  'CalculatorController',
 );
 
 export class CalculatorController {
   private model: Calculator;
 
-  public constructor(@Inject(CALCULATOR_MODEL) calculator: Calculator) {
+  public constructor(calculator: Calculator) {
     this.model = calculator;
   }
 
@@ -21,16 +21,20 @@ export class CalculatorController {
     this.model.removeObserver(observer);
   }
 
-  public handleSum(n1: string, n2: string): number {
+  public handleSum(n1: string, n2: string): void {
     const num1: number = parseInt(n1);
     const num2: number = parseInt(n2);
-    return this.model.sum(num1, num2);
+    this.model.sum(num1, num2);
   }
 
-  public handleSub(n1: string, n2: string): number {
+  public handleSub(n1: string, n2: string): void {
     const num1: number = parseInt(n1);
     const num2: number = parseInt(n2);
-    return this.model.sub(num1, num2);
+    this.model.sub(num1, num2);
+  }
+
+  public getResult(): number {
+    return this.model.getResult();
   }
 
   public getHistory(): Array<string> {

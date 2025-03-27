@@ -1,4 +1,4 @@
-import { IObserver } from '../views/i-observer';
+import { IObserver } from '../views/iobserver.interface';
 
 export interface IObservable {
   addObserver(observer: IObserver): void;

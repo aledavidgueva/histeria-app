@@ -3,16 +3,28 @@ import { NgModule } from '@angular/core';
 import {
   CALCULATOR_CONTROLLER,
   CalculatorController,
-} from './controllers/calculator-controller';
-import { Calculator, CALCULATOR_MODEL } from './models/calculator';
+} from './controllers/calculator.controller';
+import { Calculator, CALCULATOR_MODEL } from './models/calculator.model';
 import { FormsModule } from '@angular/forms';
-import { CalculatorSumView } from './views/calculator-sum-view';
-import { CalculatorSubView } from './views/calculator-sub-view';
-import { CalculatorSelectorView } from './views/calculator-selector-view';
+import { CalculatorSumView } from './views/calculator-sum.view';
+import { CalculatorSubView } from './views/calculator-sub.view';
+import { CalculatorMenuView } from './views/calculator-menu.view';
 import { CalculatorRoutingModule } from './calculator-routing.module';
+import { CalculatorHistoryView } from './views/calculator-history.view';
+import { CalculatorTitleView } from './views/calculator-title.view';
+import { CalculatorView } from './views/calculator.view';
+import { CalculatorResultView } from './views/calculator-result.view';
 
 @NgModule({
-  declarations: [CalculatorSelectorView, CalculatorSumView, CalculatorSubView],
+  declarations: [
+    CalculatorView,
+    CalculatorTitleView,
+    CalculatorMenuView,
+    CalculatorSumView,
+    CalculatorSubView,
+    CalculatorResultView,
+    CalculatorHistoryView,
+  ],
   imports: [FormsModule, CalculatorRoutingModule],
   providers: [
     {

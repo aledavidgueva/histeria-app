@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CalculatorSelectorView } from './views/calculator-selector-view';
-import { CalculatorSumView } from './views/calculator-sum-view';
-import { CalculatorSubView } from './views/calculator-sub-view';
+import { CalculatorSumView } from './views/calculator-sum.view';
+import { CalculatorSubView } from './views/calculator-sub.view';
+import { CalculatorView } from './views/calculator.view';
 
 const routes: Routes = [
   {
     path: '',
-    component: CalculatorSelectorView,
+    component: CalculatorView,
     children: [
       {
         path: 'sum',
