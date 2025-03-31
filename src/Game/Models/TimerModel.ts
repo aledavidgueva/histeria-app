@@ -103,7 +103,7 @@ export class TimerModel implements IObservable {
     }
   }
 
-  private log(...message: string[]) {
+  private log(...message: string[]): void {
     console.log(`[${this.constructor.name}]`, ...message);
   }
 }

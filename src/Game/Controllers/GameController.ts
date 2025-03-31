@@ -4,6 +4,7 @@ import { Match } from '../Utils/Match';
 import { GameSettings } from '../Utils/GeneralSettings';
 import { IObservable } from '../Utils/IObservable';
 import { IObserver } from '../Utils/IObserver';
+import { Square } from '../Utils/Square';
 
 export const GAME_CONTROLLER = new InjectionToken<GameController>(
   'GameController',
@@ -77,5 +78,11 @@ export class GameController implements IObservable {
       throw new Error('Los valores de configuración no son válidos');
 
     this.gameModel.startNewMatch(player, columns, rows, colors);
+  }
+
+  public setRandomColor(): void {}
+
+  public onSquareClick(square: Square): void {
+    this.gameModel.setColorForSquare(square.getColumn(), square.getRow());
   }
 }

@@ -12,7 +12,7 @@ export class Color {
   public constructor(red: number, green: number, blue: number) {
     if (!this.isValid(red, green, blue))
       throw new ColorException(
-        `La configuración de color no es válida para R<${red}> G<${green}> B<${blue}>.`
+        `La configuración de color no es válida para R<${red}> G<${green}> B<${blue}>.`,
       );
 
     this.red = red;
@@ -66,8 +66,15 @@ export class Color {
     );
   }
 
-  public toString(): string {
+  /**
+   * Obtener color css en rgb
+   */
+  public getCssRGB() {
     return `rgb(${this.red}, ${this.green}, ${this.blue})`;
+  }
+
+  public toString(): string {
+    return this.getCssRGB();
   }
 }
 

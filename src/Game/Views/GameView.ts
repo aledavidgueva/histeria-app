@@ -59,7 +59,7 @@ export class GameView implements IObserver, OnInit, OnDestroy {
     this.log('Notified.');
   }
 
-  private log(...message: string[]) {
+  private log(...message: string[]): void {
     console.log(`[${this.constructor.name}]`, ...message);
   }
 }

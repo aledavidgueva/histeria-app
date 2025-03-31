@@ -37,9 +37,9 @@ import { PlayModule } from './PlayModule';
         ]);
 
         const minRows: number = 5;
-        const maxRows: number = 10;
+        const maxRows: number = 50;
         const minColums: number = 5;
-        const maxColums: number = 10;
+        const maxColums: number = 50;
         const minColors: number = 5;
 
         const gameSettings = new GameSettings(

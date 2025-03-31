@@ -5,11 +5,12 @@ import {
 } from './Controllers/BoardController';
 import { BoardView } from './Views/BoardView';
 import { GAME_CONTROLLER, GameController } from './Controllers/GameController';
-import { JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { SquareView } from './Views/SquareView';
 
 @NgModule({
-  declarations: [BoardView],
-  imports: [JsonPipe],
+  declarations: [BoardView, SquareView],
+  imports: [CommonModule],
   providers: [
     {
       provide: GAME_CONTROLLER,

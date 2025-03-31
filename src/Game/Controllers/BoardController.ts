@@ -22,6 +22,14 @@ export class BoardController implements IObservable {
     return this.boardModel.getSquares();
   }
 
+  public getColumns(): number {
+    return this.boardModel.getColumns();
+  }
+
+  public getRows(): number {
+    return this.boardModel.getRows();
+  }
+
   public addObserver(observer: IObserver): void {
     this.boardModel.addObserver(observer);
   }

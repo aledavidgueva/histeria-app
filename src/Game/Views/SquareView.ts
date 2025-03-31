@@ -3,50 +3,58 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { GAME_CONTROLLER, GameController } from '../Controllers/GameController';
 import { IObserver } from '../Utils/IObserver';
-import { Match } from '../Utils/Match';
+import { Square } from '../Utils/Square';
 
 @Component({
-  selector: 'game-play',
+  selector: 'game-square',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
-    <h1>Jugando</h1>
-
-    <h2>Jugador: {{ player }}</h2>
-
-    <h3>Tiempo: <game-timer></game-timer></h3>
-
-    <game-board></game-board>
+    <div
+      *ngIf="square"
+      [style.backgroundColor]="color"
+      (click)="onSquareClick(square)"
+    ></div>
   `,
   styles: [
     `
       :host {
         display: block;
       }
+
+      div {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1;
+        background-color: #ccc;
+      }
     `,
   ],
 })
-export class PlayView implements IObserver, OnInit, OnDestroy {
+export class SquareView implements IObserver, OnInit, OnDestroy {
   private readonly gameController: GameController;
-
   private readonly cdRef: ChangeDetectorRef;
 
-  private match: Match | null = null;
+  public color: string | null;
 
-  public player: string;
+  @Input()
+  public square: Square | null;
 
   public constructor(
-    @Inject(GAME_CONTROLLER) gameController: GameController,
+    @Inject(GAME_CONTROLLER)
+    gameController: GameController,
     cdRef: ChangeDetectorRef,
   ) {
     this.cdRef = cdRef;
     this.gameController = gameController;
-    this.player = '';
+    this.color = null;
+    this.square = null;
   }
 
   public ngOnInit(): void {
@@ -57,8 +65,16 @@ export class PlayView implements IObserver, OnInit, OnDestroy {
     this.gameController.removeObserver(this);
   }
 
+  public onSquareClick(square: Square): void {
+    this.gameController.onSquareClick(square);
+  }
+
   public notify(): void {
-    this.cdRef.detectChanges();
+    const color = this.square?.getColor()?.getCssRGB() ?? null;
+    if (color !== this.color) {
+      this.color = color;
+      this.cdRef.detectChanges();
+    }
     this.log('Notified.');
   }
 

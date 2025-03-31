@@ -5,6 +5,7 @@ import { GameSettings } from '../Utils/GeneralSettings';
 import { Match } from '../Utils/Match';
 import { TimerModel } from './TimerModel';
 import { BoardModel } from './BoardModel';
+import { Color } from '../Utils/Color';
 
 export const GAME_MODEL = new InjectionToken<GameModel>('GameModel');
 
@@ -76,6 +77,56 @@ export class GameModel implements IObservable {
     return this.match;
   }
 
+  /**
+   * Setear color en casilla.
+   * Esto luego dispara evento de control de estado del juego.
+   */
+  public setColorForSquare(column: number, row: number): void {
+    if (!this.match)
+      throw new GameModelRuntimeException('No hay partida en curso.');
+
+    const square = this.match.getBoard().getSquare(column, row);
+    if (!square)
+      throw new GameModelRuntimeException(
+        'Las coordenadas no apuntan a ninguna casilla válida.',
+      );
+
+    const squareColor = this.getRandomColor(square.getColor());
+    square.setColor(squareColor);
+
+    this.notifyObservers();
+  }
+
+  /**
+   * Obtener un color aleatorio de parte de la lista de colores disponible
+   * en función de la cantidad de colores que se juegan en la partida actual
+   * Opcionalmente se puede indicar la exclusión de un color en el sorteo
+   */
+  private getRandomColor(excludedColor: Color | null): Color {
+    const colorList = this.getMatchColorList();
+
+    let color: Color | null = null;
+    do {
+      color = colorList[Math.floor(Math.random() * colorList.length)]!;
+    } while (excludedColor && excludedColor.isEquals(color));
+
+    if (!color)
+      throw new GameModelRuntimeException(
+        'Error inesperado en el randomizador de colores.',
+      );
+
+    return color;
+  }
+
+  private getMatchColorList(): Array<Color> {
+    if (!this.match)
+      throw new GameModelRuntimeException('No hay partida en curso.');
+
+    return this.gameSettings.getPartialColorList(
+      this.match.getBoard().getColors(),
+    );
+  }
+
   public addObserver(observer: IObserver): void {
     this.observers.push(observer);
     observer.notify();
@@ -96,7 +147,10 @@ export class GameModel implements IObservable {
     }
   }
 
-  private log(...message: string[]) {
+  private log(...message: string[]): void {
     console.log(`[${this.constructor.name}]`, ...message);
   }
 }
+
+export class GameModelException extends Error {}
+export class GameModelRuntimeException extends GameModelException {}
