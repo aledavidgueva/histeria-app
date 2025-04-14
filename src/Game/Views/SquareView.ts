@@ -9,18 +9,15 @@ import {
 } from '@angular/core';
 import { GAME_CONTROLLER, GameController } from '../Controllers/GameController';
 import { IObserver } from '../Utils/IObserver';
-import { Square } from '../Utils/Square';
 
 @Component({
   selector: 'game-square',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
-    <div
-      *ngIf="square"
-      [style.backgroundColor]="color"
-      (click)="onSquareClick(square)"
-    ></div>
+    @if (column !== null && row !== null) {
+      <div [style.backgroundColor]="color" (click)="onSquareClick()"></div>
+    }
   `,
   styles: [
     `
@@ -29,10 +26,18 @@ import { Square } from '../Utils/Square';
       }
 
       div {
+        position: relative;
         width: 100%;
         height: 100%;
         aspect-ratio: 1;
         background-color: #ccc;
+        cursor: pointer;
+        transition: all ease-out 0.2s;
+
+        &:hover {
+          z-index: 10;
+          box-shadow: 0 0 0.5rem 0.25rem rgba(0, 0, 0, 0.75);
+        }
       }
     `,
   ],
@@ -44,7 +49,10 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
   public color: string | null;
 
   @Input()
-  public square: Square | null;
+  public column: number | null;
+
+  @Input()
+  public row: number | null;
 
   public constructor(
     @Inject(GAME_CONTROLLER)
@@ -54,7 +62,8 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
     this.cdRef = cdRef;
     this.gameController = gameController;
     this.color = null;
-    this.square = null;
+    this.column = null;
+    this.row = null;
   }
 
   public ngOnInit(): void {
@@ -65,20 +74,40 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
     this.gameController.removeObserver(this);
   }
 
-  public onSquareClick(square: Square): void {
-    this.gameController.onSquareClick(square);
+  public onSquareClick(): void {
+    if (this.column === null || this.row === null) return;
+
+    this.gameController.onSquareClick(this.column, this.row);
   }
 
   public notify(): void {
-    const color = this.square?.getColor()?.getCssRGB() ?? null;
-    if (color !== this.color) {
+    if (this.column === null || this.row === null) return;
+
+    const color = this.gameController.getSquareCssColor(this.column, this.row);
+    if (
+      (color === null && this.color !== null) ||
+      (color !== null &&
+        (this.color === null || color.localeCompare(this.color) !== 0))
+    ) {
       this.color = color;
       this.cdRef.detectChanges();
+      this.debug('Notified.');
     }
-    this.log('Notified.');
   }
 
   private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
+    console.log(
+      `[${this.constructor.name}]`,
+      `[C${this.column}F${this.row}]`,
+      ...message,
+    );
+  }
+
+  private debug(...message: string[]): void {
+    console.debug(
+      `[${this.constructor.name}]`,
+      `[C${this.column}F${this.row}]`,
+      ...message,
+    );
   }
 }

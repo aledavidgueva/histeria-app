@@ -1,10 +1,8 @@
 import { InjectionToken } from '@angular/core';
-import { GameModel, GameScreens } from '../Models/GameModel';
-import { Match } from '../Utils/Match';
-import { GameSettings } from '../Utils/GeneralSettings';
+import { GameModel, GameScreen } from '../Models/GameModel';
 import { IObservable } from '../Utils/IObservable';
 import { IObserver } from '../Utils/IObserver';
-import { Square } from '../Utils/Square';
+import { MatchModel } from '../Models/MatchModel';
 
 export const GAME_CONTROLLER = new InjectionToken<GameController>(
   'GameController',
@@ -20,32 +18,24 @@ export class GameController implements IObservable {
     this.gameModel = gameModel;
   }
 
-  public addObserver(observer: IObserver): void {
-    this.gameModel.addObserver(observer);
+  public getCurrentScreen(): GameScreen {
+    return this.gameModel.getCurrentScreen();
   }
 
-  public removeObserver(observer: IObserver): void {
-    this.gameModel.removeObserver(observer);
-  }
-
-  public getScreen(): GameScreens {
-    return this.gameModel.getScreen();
+  public goToMenuScreen(): void {
+    this.gameModel.goToMenuScreen();
   }
 
   public goToSettingsScreen(): void {
-    this.gameModel.waitNewMatchSettings();
+    this.gameModel.goToSettingsScreen();
   }
 
   public goToRecordsScreen(): void {
-    throw new Error('Method not implemented.');
+    this.gameModel.goToRecordsScreen();
   }
 
-  public getGameSettings(): GameSettings {
-    return this.gameModel.getGameSettings();
-  }
-
-  public getMatch(): Match | null {
-    return this.gameModel.getMatch();
+  public getPlayer(): string {
+    return this.gameModel.getMatch().getPlayer().toString();
   }
 
   public playMatch(
@@ -80,9 +70,40 @@ export class GameController implements IObservable {
     this.gameModel.startNewMatch(player, columns, rows, colors);
   }
 
-  public setRandomColor(): void {}
+  public onSquareClick(column: number, row: number): void {
+    if (this.gameModel.hasMatch() && !this.gameModel.hasWinner()) {
+      this.gameModel.setColorForSquareAndCheck(column, row);
+    }
+  }
 
-  public onSquareClick(square: Square): void {
-    this.gameModel.setColorForSquare(square.getColumn(), square.getRow());
+  public getBoardColumns(): number {
+    return this.gameModel.hasMatch()
+      ? this.gameModel.getMatch().getBoard().getColumns()
+      : 0;
+  }
+
+  public getBoardRows(): number {
+    return this.gameModel.hasMatch()
+      ? this.gameModel.getMatch().getBoard().getRows()
+      : 0;
+  }
+
+  /**
+   * Retorna código de color para css
+   */
+  public getSquareCssColor(column: number, row: number): string | null {
+    const square = this.gameModel.getSquare(column, row);
+    const color = square.getColor();
+    return color !== null
+      ? `rgb(${color.getRed()}, ${color.getGreen()}, ${color.getBlue()})`
+      : null;
+  }
+
+  public addObserver(observer: IObserver): void {
+    this.gameModel.addObserver(observer);
+  }
+
+  public removeObserver(observer: IObserver): void {
+    this.gameModel.removeObserver(observer);
   }
 }

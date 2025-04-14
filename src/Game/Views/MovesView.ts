@@ -8,17 +8,17 @@ import {
 } from '@angular/core';
 import { IObserver } from '../Utils/IObserver';
 import {
-  TIMER_CONTROLLER,
-  TimerController,
-} from '../Controllers/TimerController';
+  MATCH_CONTROLLER,
+  MatchController,
+} from '../Controllers/MatchController';
 
 @Component({
-  selector: 'game-timer',
+  selector: 'game-moves',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
     <div>
-      {{ time }}
+      {{ moves | number: '1.0' }}
     </div>
   `,
   styles: [
@@ -29,31 +29,31 @@ import {
     `,
   ],
 })
-export class TimerView implements IObserver, OnInit, OnDestroy {
-  private readonly timerController: TimerController;
+export class MovesView implements IObserver, OnInit, OnDestroy {
+  private readonly matchController: MatchController;
   private readonly cdRef: ChangeDetectorRef;
 
-  public time: string;
+  public moves: number;
 
   public constructor(
-    @Inject(TIMER_CONTROLLER) timerController: TimerController,
+    @Inject(MATCH_CONTROLLER) matchController: MatchController,
     cdRef: ChangeDetectorRef,
   ) {
     this.cdRef = cdRef;
-    this.timerController = timerController;
-    this.time = '';
+    this.matchController = matchController;
+    this.moves = 0;
   }
 
   public ngOnInit(): void {
-    this.timerController.addObserver(this);
+    this.matchController.addObserver(this);
   }
 
   public ngOnDestroy(): void {
-    this.timerController.removeObserver(this);
+    this.matchController.removeObserver(this);
   }
 
   public notify(): void {
-    this.time = this.timerController.getTime();
+    this.moves = this.matchController.getMoves();
     this.cdRef.detectChanges();
     this.debug('Notified.');
   }

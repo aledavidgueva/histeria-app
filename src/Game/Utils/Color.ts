@@ -58,23 +58,17 @@ export class Color {
   /**
    * Comparación de colores
    */
-  public isEquals(color: Color): boolean {
+  public isEquals(color: Color | null): boolean {
     return (
+      color !== null &&
       this.red === color.getRed() &&
       this.green === color.getGreen() &&
       this.blue === color.getBlue()
     );
   }
 
-  /**
-   * Obtener color css en rgb
-   */
-  public getCssRGB() {
-    return `rgb(${this.red}, ${this.green}, ${this.blue})`;
-  }
-
   public toString(): string {
-    return this.getCssRGB();
+    return `Color [R:${this.red}, G:${this.green}, B:${this.blue}]`;
   }
 }
 

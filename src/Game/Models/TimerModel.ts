@@ -77,33 +77,47 @@ export class TimerModel implements IObservable {
     }
   }
 
+  public getHours(): number {
+    return this.hours;
+  }
+
+  public getMinutes(): number {
+    return this.minutes;
+  }
+
+  public getSeconds(): number {
+    return this.seconds;
+  }
+
   public toString(): string {
-    return `${this.hours.toString().padStart(2, '0')}:${this.minutes
-      .toString()
-      .padStart(2, '0')}:${this.seconds.toString().padStart(2, '0')}`;
+    return `${this.getHours()} Hs. ${this.getMinutes()} mins. ${this.getSeconds()} seg.`;
   }
 
   public addObserver(observer: IObserver): void {
     this.observers.push(observer);
     observer.notify();
-    this.log(`Observer ${observer.constructor.name} agregado.`);
+    this.debug(`Observer ${observer.constructor.name} agregado.`);
   }
 
   public removeObserver(observer: IObserver): void {
     this.observers = this.observers.filter(
       (current: IObserver) => current !== observer,
     );
-    this.log(`Observer ${observer.constructor.name} removido.`);
+    this.debug(`Observer ${observer.constructor.name} removido.`);
   }
 
-  public notifyObservers(): void {
+  private notifyObservers(): void {
     for (const observer of this.observers) {
       observer.notify();
-      this.log(`Observer ${observer.constructor.name} notificado.`);
+      this.debug(`Observer ${observer.constructor.name} notificado.`);
     }
   }
 
   private log(...message: string[]): void {
     console.log(`[${this.constructor.name}]`, ...message);
+  }
+
+  private debug(...message: string[]): void {
+    console.debug(`[${this.constructor.name}]`, ...message);
   }
 }

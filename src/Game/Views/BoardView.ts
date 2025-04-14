@@ -7,13 +7,8 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { IObserver } from '../Utils/IObserver';
-import {
-  BOARD_CONTROLLER,
-  BoardController,
-} from '../Controllers/BoardController';
-import { Square } from '../Utils/Square';
 import { GAME_CONTROLLER, GameController } from '../Controllers/GameController';
+import { IObserver } from '../Utils/IObserver';
 
 export type ViewportOrientation = 'LANDSCAPE' | 'PORTRAIT';
 
@@ -24,12 +19,13 @@ export type ViewportOrientation = 'LANDSCAPE' | 'PORTRAIT';
   template: `
     <div class="board">
       <div class="columns">
-        @for (items of squares; track items) {
+        <ng-container *ngxRepeat="columns; let column = index">
           <div class="rows">
-            @for (square of items; track square) {
+            <ng-container *ngxRepeat="rows; let row = index">
               <game-square
                 class="square"
-                [square]="square"
+                [column]="column"
+                [row]="row"
                 [style.width]="
                   columns > rows
                     ? orientation === 'PORTRAIT'
@@ -40,11 +36,10 @@ export type ViewportOrientation = 'LANDSCAPE' | 'PORTRAIT';
                       : 'calc(75vh / ' + rows + ')'
                 "
               >
-                <!-- C{{ square.getColumn() }}F{{ square.getRow() }} -->
               </game-square>
-            }
+            </ng-container>
           </div>
-        }
+        </ng-container>
       </div>
     </div>
   `,
@@ -84,45 +79,38 @@ export type ViewportOrientation = 'LANDSCAPE' | 'PORTRAIT';
   ],
 })
 export class BoardView implements IObserver, OnInit, OnDestroy {
-  private readonly boardController: BoardController;
+  private readonly gameController: GameController;
   private readonly cdRef: ChangeDetectorRef;
 
-  public squares: Array<Array<Square>>;
   public columns: number;
   public rows: number;
+
   public orientation: ViewportOrientation;
 
   public constructor(
-    @Inject(BOARD_CONTROLLER)
-    boardController: BoardController,
+    @Inject(GAME_CONTROLLER) gameController: GameController,
     cdRef: ChangeDetectorRef,
   ) {
     this.cdRef = cdRef;
-    this.boardController = boardController;
-    this.squares = new Array();
+    this.gameController = gameController;
     this.columns = 0;
     this.rows = 0;
     this.orientation = this.getOrientation(window); // window es global en este contexto
   }
 
   public ngOnInit(): void {
-    this.boardController.addObserver(this);
+    this.gameController.addObserver(this);
   }
 
   public ngOnDestroy(): void {
-    this.boardController.removeObserver(this);
+    this.gameController.removeObserver(this);
   }
 
   public notify(): void {
-    this.squares = [...this.boardController.getSquares()];
-    this.columns = this.boardController.getColumns();
-    this.rows = this.boardController.getRows();
+    this.columns = this.gameController.getBoardColumns();
+    this.rows = this.gameController.getBoardRows();
     this.cdRef.detectChanges();
-    this.log('Notified.');
-  }
-
-  private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
+    this.debug('Notified.');
   }
 
   @HostListener('window:resize', ['$event'])
@@ -138,5 +126,13 @@ export class BoardView implements IObserver, OnInit, OnDestroy {
     const orientation: ViewportOrientation =
       window.innerWidth < window.innerHeight ? 'PORTRAIT' : 'LANDSCAPE';
     return orientation;
+  }
+
+  private log(...message: string[]): void {
+    console.log(`[${this.constructor.name}]`, ...message);
+  }
+
+  private debug(...message: string[]): void {
+    console.debug(`[${this.constructor.name}]`, ...message);
   }
 }

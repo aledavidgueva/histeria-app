@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { IObserver } from '../Utils/IObserver';
 import { GAME_CONTROLLER, GameController } from '../Controllers/GameController';
-import { GameScreens } from '../Models/GameModel';
+import { GameScreen } from '../Models/GameModel';
 
 @Component({
   selector: 'game-root',
@@ -16,9 +16,22 @@ import { GameScreens } from '../Models/GameModel';
   standalone: false,
   template: `
     <h1>Histeria</h1>
-    <game-menu *ngIf="screen === 'MAIN_MENU'"></game-menu>
-    <game-settings *ngIf="screen === 'MATCH_SETTINGS'"></game-settings>
-    <game-play *ngIf="screen === 'PLAY'"></game-play>
+
+    @if (screenIsMenu()) {
+      <game-menu></game-menu>
+    }
+
+    @if (screenIsSettings()) {
+      <game-settings></game-settings>
+    }
+
+    @if (screenIsPlayOrGameOver()) {
+      <game-play></game-play>
+    }
+
+    @if (screenIsRecords()) {
+      <div>RECORDS SCREEN</div>
+    }
   `,
   styles: [
     `
@@ -31,9 +44,9 @@ import { GameScreens } from '../Models/GameModel';
 export class GameView implements IObserver, OnInit, OnDestroy {
   private readonly gameController: GameController;
 
-  public screen: GameScreens;
-
   private readonly cdRef: ChangeDetectorRef;
+
+  public currentScreen: GameScreen;
 
   public constructor(
     @Inject(GAME_CONTROLLER) gameController: GameController,
@@ -41,8 +54,7 @@ export class GameView implements IObserver, OnInit, OnDestroy {
   ) {
     this.gameController = gameController;
     this.cdRef = cdRef;
-
-    this.screen = this.gameController.getScreen();
+    this.currentScreen = GameScreen.MENU;
   }
 
   public ngOnInit(): void {
@@ -53,13 +65,40 @@ export class GameView implements IObserver, OnInit, OnDestroy {
     this.gameController.removeObserver(this);
   }
 
+  public screenIsMenu(): boolean {
+    return this.screenIs(GameScreen.MENU);
+  }
+
+  public screenIsSettings(): boolean {
+    return this.screenIs(GameScreen.SETTINGS);
+  }
+
+  public screenIsRecords(): boolean {
+    return this.screenIs(GameScreen.RECORDS);
+  }
+
+  public screenIsPlayOrGameOver(): boolean {
+    return this.screenIs(GameScreen.PLAY) || this.screenIs(GameScreen.GAMEOVER);
+  }
+
+  public screenIs(screen: GameScreen): boolean {
+    return this.currentScreen.localeCompare(screen) === 0;
+  }
+
   public notify(): void {
-    this.screen = this.gameController.getScreen();
-    this.cdRef.detectChanges();
-    this.log('Notified.');
+    const currentScreen: GameScreen = this.gameController.getCurrentScreen();
+    if (this.currentScreen.localeCompare(currentScreen) !== 0) {
+      this.currentScreen = currentScreen;
+      this.cdRef.detectChanges();
+      this.debug('Notified.');
+    }
   }
 
   private log(...message: string[]): void {
     console.log(`[${this.constructor.name}]`, ...message);
+  }
+
+  private debug(...message: string[]): void {
+    console.debug(`[${this.constructor.name}]`, ...message);
   }
 }

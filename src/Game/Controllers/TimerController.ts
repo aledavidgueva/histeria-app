@@ -17,16 +17,12 @@ export class TimerController implements IObservable {
     this.timerModel = timerModel;
   }
 
-  public getTimer(): string {
-    return this.timerModel.toString();
-  }
+  public getTime(): string {
+    const hours: string = this.timerModel.getHours().toString();
+    const minutes: string = this.timerModel.getMinutes().toString();
+    const seconds: string = this.timerModel.getSeconds().toString();
 
-  public startTimer(): void {
-    this.timerModel.start();
-  }
-
-  public pauseTimer(): void {
-    this.timerModel.pause();
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
   }
 
   public getTimerStatus(): TimerStatus {

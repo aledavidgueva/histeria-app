@@ -4,27 +4,22 @@ import {
   TimerController,
 } from './Controllers/TimerController';
 import { TimerView } from './Views/TimerView';
-import { GAME_CONTROLLER, GameController } from './Controllers/GameController';
+import { GAME_MODEL, GameModel } from './Models/GameModel';
 
 @NgModule({
   declarations: [TimerView],
   imports: [],
   providers: [
     {
-      provide: GAME_CONTROLLER,
-      useExisting: GameController,
+      provide: GAME_MODEL,
+      useExisting: GameModel,
     },
     {
       provide: TIMER_CONTROLLER,
-      useFactory: (gameController: GameController) => {
-        const match = gameController.getMatch();
-        if (match === null)
-          throw new Error('Error de inicialización del TimerController');
-
-        const timerModel = match.getTimer();
-        return new TimerController(timerModel);
+      useFactory: (game: GameModel) => {
+        return new TimerController(game.getMatch().getTimer());
       },
-      deps: [GAME_CONTROLLER],
+      deps: [GAME_MODEL],
     },
   ],
   exports: [TimerView],

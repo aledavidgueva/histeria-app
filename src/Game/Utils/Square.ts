@@ -23,6 +23,10 @@ export class Square {
     );
   }
 
+  resetColor(): void {
+    this.color = null;
+  }
+
   setColor(color: Color): void {
     this.color = color;
   }
@@ -37,6 +41,10 @@ export class Square {
 
   getColor(): Color | null {
     return this.color;
+  }
+
+  toString(): string {
+    return `Casilla [C${this.column}F${this.row} - Color: ${this.color}]`;
   }
 }
 

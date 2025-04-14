@@ -29,6 +29,6 @@ export class MenuView {
   }
 
   public goToRecordsScreen(): void {
-    throw new Error('Method not implemented.');
+    this.gameController.goToRecordsScreen();
   }
 }
