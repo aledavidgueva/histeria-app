@@ -55,10 +55,6 @@ export class MovesView implements IObserver, OnInit, OnDestroy {
     this.debug('Notified.');
   }
 
-  private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
-  }
-
   private debug(...message: string[]): void {
     console.debug(`[${this.constructor.name}]`, ...message);
   }

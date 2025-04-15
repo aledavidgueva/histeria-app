@@ -42,7 +42,7 @@ export class TimerModel implements IObservable {
     this.timerStatus = 'RUNNING';
     this.waitAndRun();
     this.notifyObservers();
-    this.log('Timer iniciado.');
+    this.debug('Timer iniciado.');
   }
 
   public pause(): void {
@@ -50,7 +50,7 @@ export class TimerModel implements IObservable {
 
     this.timerStatus = 'PAUSED';
     this.notifyObservers();
-    this.log('Timer pausado.');
+    this.debug('Timer pausado.');
   }
 
   public getTimerStatus(): TimerStatus {
@@ -111,10 +111,6 @@ export class TimerModel implements IObservable {
       observer.notify();
       this.debug(`Observer ${observer.constructor.name} notificado.`);
     }
-  }
-
-  private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
   }
 
   private debug(...message: string[]): void {

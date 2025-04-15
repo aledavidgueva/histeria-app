@@ -129,10 +129,6 @@ export class BoardView implements IObserver, OnInit, OnDestroy {
     return orientation;
   }
 
-  private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
-  }
-
   private debug(...message: string[]): void {
     console.debug(`[${this.constructor.name}]`, ...message);
   }

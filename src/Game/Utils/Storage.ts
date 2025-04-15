@@ -31,7 +31,6 @@ export class MatchRecordsStorage {
   public set(records: Array<MatchRecord>): void {
     this.check();
     window.localStorage.setItem(this.dbName, this.encode(records));
-    console.log(records, this.encode(records));
   }
 
   public get(): Array<MatchRecord> {

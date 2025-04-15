@@ -108,7 +108,7 @@ export class GameModel implements IObservable {
 
     const board = new Board(columns, rows, colors);
     const match = new Match(player, board);
-    this.log('Iniciando nueva partida...', match.toString());
+    this.debug('Iniciando nueva partida...', match.toString());
     this.match = match;
     this.currentScreen = GameScreen.PLAY;
     this.match.getTimer().start();
@@ -586,10 +586,6 @@ export class GameModel implements IObservable {
       observer.notify();
       this.debug(`Observer ${observer.constructor.name} notificado.`);
     }
-  }
-
-  private log(...message: string[]): void {
-    console.log(`[${this.constructor.name}]`, ...message);
   }
 
   private debug(...message: string[]): void {

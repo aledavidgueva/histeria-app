@@ -113,14 +113,6 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
     this.debug('Notified.');
   }
 
-  private log(...message: string[]): void {
-    console.log(
-      `[${this.constructor.name}]`,
-      `[C${this.column}F${this.row}]`,
-      ...message,
-    );
-  }
-
   private debug(...message: string[]): void {
     console.debug(
       `[${this.constructor.name}]`,
