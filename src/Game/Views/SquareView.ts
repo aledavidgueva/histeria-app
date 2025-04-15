@@ -16,7 +16,11 @@ import { IObserver } from '../Utils/IObserver';
   standalone: false,
   template: `
     @if (column !== null && row !== null) {
-      <div [style.backgroundColor]="color" (click)="onSquareClick()"></div>
+      <div
+        [style.backgroundColor]="color"
+        [class.suggested]="suggested"
+        (click)="onSquareClick()"
+      ></div>
     }
   `,
   styles: [
@@ -32,7 +36,13 @@ import { IObserver } from '../Utils/IObserver';
         aspect-ratio: 1;
         background-color: #ccc;
         cursor: pointer;
-        transition: all ease-out 0.2s;
+        transition: all ease-out 0.1s;
+
+        &.suggested {
+          z-index: 10;
+          box-shadow: 0 0 0.5rem 0.25rem rgba(0, 255, 0, 0.9);
+          background-color: #ddd;
+        }
 
         &:hover {
           z-index: 10;
@@ -47,6 +57,8 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
   private readonly cdRef: ChangeDetectorRef;
 
   public color: string | null;
+
+  public suggested: boolean;
 
   @Input()
   public column: number | null;
@@ -64,6 +76,7 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
     this.color = null;
     this.column = null;
     this.row = null;
+    this.suggested = false;
   }
 
   public ngOnInit(): void {
@@ -81,8 +94,13 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
   }
 
   public notify(): void {
+    if (!this.gameController.hasMatch()) return;
     if (this.column === null || this.row === null) return;
 
+    this.suggested = this.gameController.isSuggestedSquare(
+      this.column,
+      this.row,
+    );
     const color = this.gameController.getSquareCssColor(this.column, this.row);
     if (
       (color === null && this.color !== null) ||
@@ -90,9 +108,9 @@ export class SquareView implements IObserver, OnInit, OnDestroy {
         (this.color === null || color.localeCompare(this.color) !== 0))
     ) {
       this.color = color;
-      this.cdRef.detectChanges();
-      this.debug('Notified.');
     }
+    this.cdRef.detectChanges();
+    this.debug('Notified.');
   }
 
   private log(...message: string[]): void {

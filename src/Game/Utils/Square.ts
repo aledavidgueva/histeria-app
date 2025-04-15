@@ -1,16 +1,16 @@
 import { Color } from './Color';
+import { Coordinate } from './Coordinate';
 
 export class Square {
-  private readonly column: number;
-  private readonly row: number;
+  private coordinate: Coordinate;
+
   private color: Color | null;
 
   public constructor(column: number, row: number, color: Color | null = null) {
     if (!this.isValid(column, row))
       throw new SquareArgException(`Coordenadas no válidas.`);
 
-    this.column = column;
-    this.row = row;
+    this.coordinate = new Coordinate(column, row);
     this.color = color;
   }
 
@@ -31,12 +31,8 @@ export class Square {
     this.color = color;
   }
 
-  getColumn(): number {
-    return this.column;
-  }
-
-  getRow(): number {
-    return this.row;
+  getCoordinate(): Coordinate {
+    return this.coordinate;
   }
 
   getColor(): Color | null {
@@ -44,7 +40,7 @@ export class Square {
   }
 
   toString(): string {
-    return `Casilla [C${this.column}F${this.row} - Color: ${this.color}]`;
+    return `Casilla [C${this.coordinate.getColumn()}F${this.coordinate.getRow()} - Color: ${this.color}]`;
   }
 }
 

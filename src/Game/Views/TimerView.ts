@@ -11,22 +11,32 @@ import {
   TIMER_CONTROLLER,
   TimerController,
 } from '../Controllers/TimerController';
+import { GAME_MODEL, GameModel } from '../Models/GameModel';
 
 @Component({
   selector: 'game-timer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
-    <div>
+    <span>
       {{ time }}
-    </div>
+    </span>
   `,
   styles: [
     `
       :host {
-        display: block;
+        display: inline-block;
       }
     `,
+  ],
+  providers: [
+    {
+      provide: TIMER_CONTROLLER,
+      useFactory: (game: GameModel) => {
+        return new TimerController(game.getMatch().getTimer());
+      },
+      deps: [GAME_MODEL],
+    },
   ],
 })
 export class TimerView implements IObserver, OnInit, OnDestroy {

@@ -6,22 +6,24 @@ import { Color } from './Color';
 export class GameSettings {
   private minRows: number;
   private maxRows: number;
-  private minColums: number;
-  private maxColums: number;
+  private minColumns: number;
+  private maxColumns: number;
   private minColors: number;
   private colors: Set<Color>;
   private maxColors: number;
+  private levels: Array<string>;
 
   public constructor(
     minRows: number,
     maxRows: number,
-    minColums: number,
-    maxColums: number,
+    minColumns: number,
+    maxColumns: number,
     minColors: number,
     colors: Set<Color>,
+    levels: Array<string>,
   ) {
     if (
-      !this.isValid(minRows, maxRows, minColums, maxColums, minColors, colors)
+      !this.isValid(minRows, maxRows, minColumns, maxColumns, minColors, colors)
     )
       throw new GameSettingsArgException(
         `La configuración del juego no es válida.`,
@@ -29,24 +31,25 @@ export class GameSettings {
 
     this.minRows = minRows;
     this.maxRows = maxRows;
-    this.minColums = minColums;
-    this.maxColums = maxColums;
+    this.minColumns = minColumns;
+    this.maxColumns = maxColumns;
     this.minColors = minColors;
     this.colors = colors;
     this.maxColors = colors.size;
+    this.levels = levels;
   }
 
   private isValid(
     minRows: number,
     maxRows: number,
-    minColums: number,
-    maxColums: number,
+    minColumns: number,
+    maxColumns: number,
     minColors: number,
     colors: Set<Color>,
   ): boolean {
     return (
       this.isValidRange(minRows, maxRows) &&
-      this.isValidRange(minColums, maxColums) &&
+      this.isValidRange(minColumns, maxColumns) &&
       this.isValidRange(minColors, colors.size)
     );
   }
@@ -65,12 +68,12 @@ export class GameSettings {
     return this.maxRows;
   }
 
-  public getMinColums(): number {
-    return this.minColums;
+  public getMinColumns(): number {
+    return this.minColumns;
   }
 
-  public getMaxColums(): number {
-    return this.maxColums;
+  public getMaxColumns(): number {
+    return this.maxColumns;
   }
 
   public getMinColors(): number {
@@ -79,6 +82,10 @@ export class GameSettings {
 
   public getMaxColors(): number {
     return this.maxColors;
+  }
+
+  public getLevels(): Array<string> {
+    return this.levels;
   }
 
   public getColors(): Set<Color> {

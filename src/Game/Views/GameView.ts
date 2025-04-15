@@ -15,23 +15,33 @@ import { GameScreen } from '../Models/GameModel';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
-    <h1>Histeria</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <h1 class="display-6 fw-bold text-body-emphasis my-3">Histeria</h1>
 
-    @if (screenIsMenu()) {
-      <game-menu></game-menu>
-    }
+          <div class="card">
+            <div class="card-body">
+              @if (screenIsMenu()) {
+                <game-menu></game-menu>
+              }
 
-    @if (screenIsSettings()) {
-      <game-settings></game-settings>
-    }
+              @if (screenIsSettings()) {
+                <game-settings></game-settings>
+              }
 
-    @if (screenIsPlayOrGameOver()) {
-      <game-play></game-play>
-    }
+              @if (screenIsPlayOrGameOver()) {
+                <game-play></game-play>
+              }
 
-    @if (screenIsRecords()) {
-      <div>RECORDS SCREEN</div>
-    }
+              @if (screenIsRecords()) {
+                <game-records></game-records>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `,
   styles: [
     `

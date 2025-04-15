@@ -29,11 +29,11 @@ export type ViewportOrientation = 'LANDSCAPE' | 'PORTRAIT';
                 [style.width]="
                   columns > rows
                     ? orientation === 'PORTRAIT'
-                      ? 'calc(90vw / ' + columns + ')'
-                      : 'calc(75vh / ' + columns + ')'
+                      ? 'calc(50vw / ' + columns + ')'
+                      : 'calc(50vh / ' + columns + ')'
                     : orientation === 'PORTRAIT'
-                      ? 'calc(90vw / ' + rows + ')'
-                      : 'calc(75vh / ' + rows + ')'
+                      ? 'calc(50vw / ' + rows + ')'
+                      : 'calc(50vh / ' + rows + ')'
                 "
               >
               </game-square>
@@ -95,6 +95,7 @@ export class BoardView implements IObserver, OnInit, OnDestroy {
     this.gameController = gameController;
     this.columns = 0;
     this.rows = 0;
+
     this.orientation = this.getOrientation(window); // window es global en este contexto
   }
 

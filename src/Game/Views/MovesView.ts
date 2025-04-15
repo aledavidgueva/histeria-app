@@ -7,53 +7,50 @@ import {
   OnInit,
 } from '@angular/core';
 import { IObserver } from '../Utils/IObserver';
-import {
-  MATCH_CONTROLLER,
-  MatchController,
-} from '../Controllers/MatchController';
+import { GAME_CONTROLLER, GameController } from '../Controllers/GameController';
 
 @Component({
   selector: 'game-moves',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
   template: `
-    <div>
+    <span>
       {{ moves | number: '1.0' }}
-    </div>
+    </span>
   `,
   styles: [
     `
       :host {
-        display: block;
+        display: inline-block;
       }
     `,
   ],
 })
 export class MovesView implements IObserver, OnInit, OnDestroy {
-  private readonly matchController: MatchController;
+  private readonly gameController: GameController;
   private readonly cdRef: ChangeDetectorRef;
 
   public moves: number;
 
   public constructor(
-    @Inject(MATCH_CONTROLLER) matchController: MatchController,
+    @Inject(GAME_CONTROLLER) gameController: GameController,
     cdRef: ChangeDetectorRef,
   ) {
     this.cdRef = cdRef;
-    this.matchController = matchController;
+    this.gameController = gameController;
     this.moves = 0;
   }
 
   public ngOnInit(): void {
-    this.matchController.addObserver(this);
+    this.gameController.addObserver(this);
   }
 
   public ngOnDestroy(): void {
-    this.matchController.removeObserver(this);
+    this.gameController.removeObserver(this);
   }
 
   public notify(): void {
-    this.moves = this.matchController.getMoves();
+    this.moves = this.gameController.getMoves();
     this.cdRef.detectChanges();
     this.debug('Notified.');
   }
