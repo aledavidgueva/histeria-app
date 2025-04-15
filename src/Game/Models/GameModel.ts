@@ -345,6 +345,8 @@ export class GameModel implements IObservable {
       }
     }
 
+    this.debug('Mala suerte:', matches.toString(), posibilities.toString());
+
     return matches / posibilities;
   }
 
